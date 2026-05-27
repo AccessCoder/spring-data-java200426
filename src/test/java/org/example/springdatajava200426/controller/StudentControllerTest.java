@@ -1,6 +1,7 @@
 package org.example.springdatajava200426.controller;
 
 import org.example.springdatajava200426.model.Student;
+import org.example.springdatajava200426.model.StudentDTO;
 import org.example.springdatajava200426.repository.StudentRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,25 +41,20 @@ class StudentControllerTest {
     @Test
     void saveStudent() throws Exception {
         //GIVEN
+        StudentDTO dto = new StudentDTO("Max", 25);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String requestJson = mapper.writeValueAsString(dto);
+        String responseJson = mapper.writeValueAsString(new Student("1", "123", "Max", 25));
+
         //WHEN
         mockMvc.perform(post("/api/student")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "name": "Max",
-                                    "age": 25
-                                }
-                                """))
+                        .content(requestJson))
                         //THEN
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                            {
-                              "name": "Max",
-                              "age": 25,
-                              "taxId": "123"
-                            }
-                            
-                            """))
+                .andExpect(content().json(responseJson))
                 .andExpect(jsonPath("$.id").isNotEmpty());
     }
 
