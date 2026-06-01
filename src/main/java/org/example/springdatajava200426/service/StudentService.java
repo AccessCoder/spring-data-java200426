@@ -1,6 +1,7 @@
 package org.example.springdatajava200426.service;
 
 
+import org.example.springdatajava200426.exceptions.TaxIdNotFoundException;
 import org.example.springdatajava200426.model.Student;
 import org.example.springdatajava200426.model.StudentDTO;
 import org.example.springdatajava200426.repository.StudentRepo;
@@ -27,7 +28,7 @@ public class StudentService {
     public Student save(StudentDTO newStudent) {
         Student student = Student.builder()
                 .id(idService.generateId())
-                .taxId("123")
+                .taxId("125")
                 .name(newStudent.name())
                 .age(newStudent.age())
                 .build();
@@ -35,8 +36,8 @@ public class StudentService {
         return student;
     }
 
-    public Student findStudentByTaxId(String taxId) {
+    public Student findStudentByTaxId(String taxId) throws TaxIdNotFoundException {
         return studentRepo.findStudentByTaxId(taxId)
-                .orElseThrow();
+                .orElseThrow(() -> new TaxIdNotFoundException("User with Tax Id: " + taxId + " not found!"));
     }
 }

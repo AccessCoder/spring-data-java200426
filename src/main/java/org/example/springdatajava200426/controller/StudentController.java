@@ -1,14 +1,15 @@
 package org.example.springdatajava200426.controller;
 
+import org.example.springdatajava200426.exceptions.TaxIdNotFoundException;
 import org.example.springdatajava200426.model.Student;
 import org.example.springdatajava200426.model.StudentDTO;
-import org.example.springdatajava200426.repository.StudentRepo;
 import org.example.springdatajava200426.service.StudentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Period;
+
 import java.util.List;
-import java.util.concurrent.Callable;
+
 
 @RestController
 @RequestMapping("/api/student")
@@ -26,13 +27,20 @@ public class StudentController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Student saveStudent(@RequestBody StudentDTO newStudent){
         return studentService.save(newStudent);
     }
 
     @GetMapping("/{taxId}")
-    public Student getStudentByTaxId(@PathVariable String taxId){
+    public Student getStudentByTaxId(@PathVariable
+                                         String taxId) throws TaxIdNotFoundException {
         return studentService.findStudentByTaxId(taxId);
     }
 
+    @ExceptionHandler(TaxIdNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleTaxIdNotFoundException(TaxIdNotFoundException ex){
+        return ex.getMessage();
+    }
 }

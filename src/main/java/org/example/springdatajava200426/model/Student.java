@@ -9,5 +9,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record Student(String id,
                       String taxId,
                       String name,
-                      int age) {
+                      Integer age) {
 }
