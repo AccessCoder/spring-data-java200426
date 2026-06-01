@@ -1,5 +1,6 @@
 package org.example.springdatajava200426.service;
 
+import org.example.springdatajava200426.exceptions.TaxIdNotFoundException;
 import org.example.springdatajava200426.model.Student;
 import org.example.springdatajava200426.model.StudentDTO;
 import org.example.springdatajava200426.repository.StudentRepo;
@@ -46,7 +47,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void findStudentByTaxId() {
+    void findStudentByTaxId() throws TaxIdNotFoundException {
 
         //GIVEN
         Student expected = new Student("1", "123", "Max", 25);
